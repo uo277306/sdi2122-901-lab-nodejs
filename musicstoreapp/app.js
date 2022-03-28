@@ -45,3 +45,6 @@ app.use(function (err, req, res, next) {
 });
 
 module.exports = app;
+
+//Conexión mongodb
+//mongodb+srv://uo277306:Chocolatina.@tiendamusica.cu9is.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
