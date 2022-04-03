@@ -18,7 +18,10 @@ const {MongoClient} = require("mongodb");
 const url = 'mongodb+srv://uo277306:Chocolatina.@tiendamusica.cu9is.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 app.set('connectionStrings', url);
 
-require("./routes/songs.js")(app, MongoClient);
+let songsRepository = require("./repositories/songsRepository.js");
+songsRepository.init(app, MongoClient);
+
+require("./routes/songs.js")(app, songsRepository);
 require("./routes/authors.js")(app);
 
 // view engine setup
