@@ -13,7 +13,12 @@ let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-require("./routes/songs.js")(app);
+//Conexión mongodb
+const {MongoClient} = require("mongodb");
+const url = 'mongodb+srv://uo277306:Chocolatina.@tiendamusica.cu9is.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+app.set('connectionStrings', url);
+
+require("./routes/songs.js")(app, MongoClient);
 require("./routes/authors.js")(app);
 
 // view engine setup
@@ -46,6 +51,3 @@ app.use(function (err, req, res, next) {
 });
 
 module.exports = app;
-
-//Conexión mongodb
-//mongodb+srv://uo277306:Chocolatina.@tiendamusica.cu9is.mongodb.net/myFirstDatabase?retryWrites=true&w=majority

@@ -18,7 +18,7 @@ module.exports = function (app) {
             {"value": "bass", "display": "Bajista"},
             {"value": "pianist", "display": "Teclista"}
         ];
-        
+
         let response = {"roles": roles};
         res.render("authors/add.twig", response);
     });
@@ -44,6 +44,8 @@ module.exports = function (app) {
         }
         res.send(response);
     });
+
+
 
     app.get('/authors*', function (req, res) {
         res.redirect("/authors");
