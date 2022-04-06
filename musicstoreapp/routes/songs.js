@@ -2,14 +2,7 @@ const {ObjectId} = require("mongodb");
 
 module.exports = function (app, songsRepository, commentsRepository) {
     app.get("/songs", function (req, res) {
-        let songs = [
-            {"title": "Blank space", "price": "1.2"},
-            {"title": "See you again", "price": "1.3"},
-            {"title": "Uptown Funk", "price": "1.1"}
-        ];
-
-        let response = {"seller": "Tienda de canciones", "songs": songs};
-        res.render("shop.twig", response);
+        res.redirect("/publications");
     });
 
     app.get("/shop", function (req, res) {
@@ -65,14 +58,14 @@ module.exports = function (app, songsRepository, commentsRepository) {
                                     if (err) {
                                         res.send("Error al subir el audio");
                                     } else {
-                                        res.send("Agregada la canción ID: " + songId)
+                                        res.redirect("/publications");
                                     }
                                 });
                             }
                         }
                     });
                 } else {
-                    res.send("Agregada la canción ID: " + songId);
+                    res.redirect("/publications");
                 }
             }
         });
@@ -103,7 +96,7 @@ module.exports = function (app, songsRepository, commentsRepository) {
                 if (result == null) {
                     res.send("Error al actualizar la portada o el audio de la canción");
                 } else {
-                    res.send("Se ha modificado el registro correctamente");
+                    res.redirect("/publications");
                 }
             });
         });
