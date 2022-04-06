@@ -39,8 +39,8 @@ const userSessionRouter = require('./routes/userSessionRouter');
 app.use("/songs/add", userSessionRouter);
 app.use("/publications", userSessionRouter);
 app.use("/shop", userSessionRouter)
-app.use("/songs/buy",userSessionRouter);
-app.use("/purchases",userSessionRouter);
+app.use("/songs/buy", userSessionRouter);
+app.use("/purchases", userSessionRouter);
 
 
 const userAudiosRouter = require('./routes/userAudiosRouter');
@@ -82,13 +82,14 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
+    console.log("Se ha producido un error " + err);
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 
     // render the error page
     res.status(err.status || 500);
-    res.render('error');
+    res.render('error.twig');
 });
 
 module.exports = app;
