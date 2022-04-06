@@ -36,24 +36,28 @@ const url = 'mongodb+srv://uo277306:Chocolatina.@tiendamusica.cu9is.mongodb.net/
 app.set('connectionStrings', url);
 
 const userSessionRouter = require('./routes/userSessionRouter');
-const userAudiosRouter = require('./routes/userAudiosRouter');
 app.use("/songs/add", userSessionRouter);
 app.use("/publications", userSessionRouter);
-app.use("/audios/",userAudiosRouter);
 app.use("/shop/", userSessionRouter)
 
-let songsRepository = require("./repositories/songsRepository.js");
-songsRepository.init(app, MongoClient);
+const userAudiosRouter = require('./routes/userAudiosRouter');
+app.use("/audios/", userAudiosRouter);
 
-let commentsRepository = require("./repositories/commentsRepository.js");
+const userAuthorRouter = require('./routes/userAuthorRouter');
+app.use("/songs/edit", userAuthorRouter);
+app.use("/songs/delete", userAuthorRouter);
+
+
+const songsRepository = require("./repositories/songsRepository.js");
+const commentsRepository = require("./repositories/commentsRepository.js");
+const usersRepository = require("./repositories/usersRepository.js");
+songsRepository.init(app, MongoClient);
 commentsRepository.init(app, MongoClient);
+usersRepository.init(app, MongoClient);
 
 require("./routes/songs.js")(app, songsRepository, commentsRepository);
 require("./routes/comments.js")(app, commentsRepository);
 require("./routes/authors.js")(app);
-
-const usersRepository = require("./repositories/usersRepository.js");
-usersRepository.init(app, MongoClient);
 require("./routes/users.js")(app, usersRepository);
 
 // view engine setup
