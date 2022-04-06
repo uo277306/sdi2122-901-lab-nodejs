@@ -38,10 +38,13 @@ app.set('connectionStrings', url);
 const userSessionRouter = require('./routes/userSessionRouter');
 app.use("/songs/add", userSessionRouter);
 app.use("/publications", userSessionRouter);
-app.use("/shop/", userSessionRouter)
+app.use("/shop", userSessionRouter)
+app.use("/songs/buy",userSessionRouter);
+app.use("/purchases",userSessionRouter);
+
 
 const userAudiosRouter = require('./routes/userAudiosRouter');
-app.use("/audios/", userAudiosRouter);
+app.use("/audios", userAudiosRouter);
 
 const userAuthorRouter = require('./routes/userAuthorRouter');
 app.use("/songs/edit", userAuthorRouter);
