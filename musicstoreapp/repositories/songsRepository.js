@@ -84,7 +84,7 @@ module.exports = {
             const database = client.db("musicStore");
             const collectionName = 'songs';
             const songsCollection = database.collection(collectionName);
-            const result = await songsCollection.deleteOne(filter, options);
+            const result = await songsCollection.findOneAndDelete(filter, options);
             return result;
         } catch (error) {
             throw (error);
