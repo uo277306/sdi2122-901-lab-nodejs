@@ -1,5 +1,49 @@
 const {ObjectId} = require("mongodb");
-module.exports = function (app, songsRepository) {
+module.exports = function (app, songsRepository, usersRepository) {
+    app.post('/api/v1.0/users/login', function (req, res) {
+        try {
+            let securePassword = app.get("crypto").createHmac('sha256', app.get('clave'))
+                .update(req.body.password).digest('hex');
+            let filter = {
+                email: req.body.email,
+                password: securePassword
+            }
+            let options = {};
+            usersRepository.findUser(filter, options).then(user => {
+                if (user == null) {
+                    res.status(401);
+                    res.json({
+                        message: "usuario no autorizado",
+                        authenticated: false
+                    });
+                } else {
+                    let token = app.get('jwt').sign({
+                        user: user.email,
+                        time: Date.now() / 1000
+                    }, "secreto");
+                    res.status(200);
+                    res.json({
+                        message: "usuario autorizado",
+                        authenticated: true,
+                        token: token
+                    });
+                }
+            }).catch(error => {
+                res.status(401);
+                res.json({
+                    message: "Se ha producido un error al verificar las credenciales",
+                    authenticated: false
+                });
+            });
+        } catch (e) {
+            res.status(500);
+            res.json({
+                message: "Se ha producido un error al verificar las credenciales",
+                authenticated: false
+            });
+        }
+    });
+
     app.get("/api/v1.0/songs", function (req, res) {
         let filter = {};
         let options = {};
@@ -62,21 +106,24 @@ module.exports = function (app, songsRepository) {
         }
     });
 
+    //TODO pag 16 REST
     app.put('/api/v1.0/songs/:id', function (req, res) {
         try {
             let songId = ObjectId(req.params.id);
-            let filter = {_id: songId};
+            let filter = {_id: songId, author: res.user};
             //Si la _id NO no existe, no crea un nuevo documento.
             const options = {upsert: false};
-            let song = {
-                author: req.session.user
-            }
+
+            let song = {};
+
             if (typeof req.body.title != "undefined" && req.body.title != null)
                 song.title = req.body.title;
             if (typeof req.body.kind != "undefined" && req.body.kind != null)
                 song.kind = req.body.kind;
             if (typeof req.body.price != "undefined" && req.body.price != null)
                 song.price = req.body.price;
+
+            console.log(song);
             songsRepository.updateSong(song, filter, options).then(result => {
                 if (result === null) {
                     res.status(404);
@@ -91,11 +138,11 @@ module.exports = function (app, songsRepository) {
                     res.json({
                         message: "Canción modificada correctamente.",
                         result: result
-                    })
+                    });
                 }
             }).catch(error => {
                 res.status(500);
-                res.json({error: "Se ha producido un error al modificar la canción."})
+                res.json({error: "Se ha producido un error al modificar la canción."});
             });
         } catch (e) {
             res.status(500);
